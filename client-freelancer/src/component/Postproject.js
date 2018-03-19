@@ -34,8 +34,7 @@ class Postproject extends Component {
           }
         });
   }
-
-  //Logout Function
+  //Logout Function done
   logout = () => {
     console.log("Log out function");
     API.logout()
