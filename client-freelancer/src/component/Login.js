@@ -1,8 +1,7 @@
+
 import React, {Component} from 'react';
 import { Route, withRouter } from 'react-router-dom';
 import './style_Login.css';
-import Dashboard from "./Dashboard";
-import Userprofile from "./Userprofile";
 import * as API from '../api/API';
 
 class Login extends Component {
@@ -13,16 +12,29 @@ class Login extends Component {
       email: '',
       password: '',
       isLoggedIn: false,
-      message: ''
+      message: '',
+      role: ''
   };
-
   componentWillMount(){
-      this.setState({
-        email: '',
-        password: '',
-        isLoggedIn: false,
-        message: ''
-      });
+    console.log("Componentwillmount Login");
+      API.checklogin()
+        .then((response) => {
+          console.log(response);
+          if(response.status === 201) {
+            console.log("Its ok");
+            this.props.history.push({
+              pathname: '/dashboard',
+              state: {
+                email: response.email,
+                role: response.role
+              }
+            });
+            console.log(`Email in Login -->${this.state.email} <-- Role in login --->${this.state.role}`);
+          } else {
+            console.log("Its not ok forward to login page");
+            this.props.history.push('/login');
+          }
+        });
   }
 
   // After Click on Login this function call
@@ -30,17 +42,18 @@ class Login extends Component {
         console.log(userdata);
           API.login(userdata)
           .then((response) => {
-            console.log(response);
+            console.log("login resourse"+response.role);
                 if (response.status === 201) {
                     this.setState({
                         isLoggedIn: true,
-                        message: response.msg
+                        message: response.msg,
+                        role: response.role
                     });
                     this.props.history.push({
                       pathname: '/userprofile',
                       state: {
                         email: this.state.email,
-                        name: this.state.name
+                        role: this.state.role
                       }
                   });
                 } else if (response.status === 401) {
@@ -50,9 +63,6 @@ class Login extends Component {
                     });
                     console.log(this.state);
                 }
-          })
-          .then(() => {
-
           });
           console.log("Back to login Function");
       };
@@ -87,6 +97,13 @@ class Login extends Component {
                             className="log-btn mb-4"
                             onClick={() => this.login(this.state)}>
                         Log in
+                    </button>
+                    <button type="button"
+                            className="log-btn mb-4"
+                            onClick={() => {
+                              this.props.history.push("/signup");
+                            }}>
+                        Signup
                     </button>
                     <div>
                         <button type="button" className="btn-danger">

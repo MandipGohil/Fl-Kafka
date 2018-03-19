@@ -2,35 +2,72 @@ import React, {Component} from 'react';
 import { Route, withRouter } from 'react-router-dom';
 import * as API from '../api/API';
 
+
 class Userprofile extends Component {
 
   state = {
-    email: this.props.location.state.email,
+    email: '',
     name: '',
     phonenumber: '',
     aboutme: '',
     skills: '',
     message: '',
-    photo: ''
+    photo: '',
+    role: ''
   }
 
   componentWillMount(){
     console.log("Willmount user profile");
     //console.log(this.state);
-      API.getDataUserprofile(this.state)
-        .then((response) => {
-          console.log(response);
+    API.checklogin()
+      .then((response) => {
+        //console.log(response);
+        if(response.status === 201) {
+          console.log("Session ok");
           this.setState({
             email: response.email,
-            name: response.name,
-            phonenumber: response.phonenumber,
-            aboutme: response.aboutme,
-            skills: response.skills,
-            message: response.message,
-            photo: response.photo
+            role: response.role
           });
-        });
+
+          console.log(`User Profile: email --> ${this.state.email} ** role --> ${this.state.role}`);
+          //this.props.history.push('/');
+          API.getDataUserprofile(this.state)
+            .then((response) => {
+              console.log(response);
+              //const chart1 ="data:image/png;base64," + response.photo;
+              //alert("photo --- " + chart1);
+              this.setState({
+                email: response.email,
+                name: response.name,
+                phonenumber: response.phonenumber,
+                aboutme: response.aboutme,
+                skills: response.skills,
+                message: response.message
+                //photo: chart1
+              });
+            });
+        } else {
+          console.log("Session not ok");
+          this.props.history.push('/login');
+        }
+      });
   }
+
+  //Logout Function
+  logout = () => {
+    console.log("Log out function");
+    API.logout()
+    .then((response) => {
+      if(response.status === 201) {
+        this.props.history.push('/');
+      } else if (response.status === 401) {
+          this.setState({
+              message: response.msg
+          });
+      }
+    });
+    console.log("Back to Logout Function");
+  };
 
   // After Click on Update this function call
       updateUserdata = (userdata) => {
@@ -45,7 +82,8 @@ class Userprofile extends Component {
                     this.props.history.push({
                       pathname: '/dashboard',
                       state: {
-                        email: this.state.email
+                        email: this.state.email,
+                        role: this.state.role
                       }
                     });
                 } else if (response.status === 401) {
@@ -55,8 +93,10 @@ class Userprofile extends Component {
                     console.log(this.state);
                 }
           });
-          console.log("Back to login Function");
+          console.log("Back to updateUserdata Function");
       };
+
+
 
   render() {
     return (
@@ -75,27 +115,35 @@ class Userprofile extends Component {
                       <button type="button" className="my-2 mx-sm-2 btn-outline-info"
                       onClick={() => {
                         console.log("ON Click!!!!!!");
-                        this.props.history.push("");
-                      }}>
-                        Home
-                      </button>
-                  </li>
-                  <li className="nav-item active">
-                      <button type="button" className="my-2 mx-sm-2 btn-outline-info"
-                      onClick={() => {
-                        console.log("ON Click!!!!!!");
-                        this.props.history.push("/dashboard");
+                        this.props.history.push({
+                          pathname: '/dashboard',
+                          state: {
+                            email: this.state.email,
+                            role: this.state.role
+                          }
+                        });
                       }}>
                         Dashboard
                       </button>
                   </li>
                 </ul>
                 <form className="form-inline my-2 my-lg-0">
-                  <button className="btn btn-outline-success my-2 my-sm-3 mx-sm-2" type="button">
+                  <button className="btn btn-outline-success my-2 my-sm-3 mx-sm-2" type="button"
+                  onClick={() => {
+                    console.log("ON Click Profile Button");
+                    this.props.history.push({
+                      pathname: '/userprofile',
+                      state: {
+                        email: this.state.email,
+                        role: this.state.role
+                      }
+                    });
+                  }}>
                     Hello, {this.props.location.state.email}
                   </button>
 
-                  <button className="btn btn-outline-success my-2 my-sm-3 " type="button">
+                  <button className="btn btn-outline-success my-2 my-sm-3 " type="button"
+                    onClick={() => this.logout()}>
                     Logout
                   </button>
                 </form>
@@ -104,7 +152,8 @@ class Userprofile extends Component {
 
           <div className="">
             <div className="pic-container pic-medium pic-circle mx-auto">
-              <img className="pic" src="http://www.chillicothe.com/images/profile_icon.jpg" alt=""/>
+
+               <img className="pic" src="http://cdn.historydiscussion.net/wp-content/uploads/2015/07/mrrajput.jpg" alt=""/>
               <div className="pic-overlay">
                   <a><i className="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                   <input type="file" id="photo" name="photo" placeholder="up"
@@ -127,7 +176,7 @@ class Userprofile extends Component {
                          name: event.target.value
                      });
                  }}/>
-                <i className="fa fa-user"></i>
+
             </div>
             <div className="form-group ">
               <input type="text" className="form-control" placeholder="Phone Number" id="phonenumber" name="phonenumber"
@@ -137,7 +186,7 @@ class Userprofile extends Component {
                         phonenumber: event.target.value
                     });
                 }}/>
-                <i className="fa fa-user"></i>
+
             </div>
             <div className="input-group">
               <textarea className="form-control" placeholder="About Me" aria-label="With textarea"
@@ -149,7 +198,7 @@ class Userprofile extends Component {
                     });
                 }}>
               </textarea>
-              <i className="fa fa-user"></i>
+
             </div>
 
             <div className="input-group mt-3">
@@ -162,7 +211,7 @@ class Userprofile extends Component {
                     });
                 }}>
               </textarea>
-              <i className="fa fa-user"></i>
+
             </div>
 
             <p className="lead mt-2 pt-2">
@@ -177,7 +226,8 @@ class Userprofile extends Component {
               this.props.history.push({
                 pathname: '/dashboard',
                 state: {
-                  email: this.state.email
+                  email: this.state.email,
+                  role: this.state.role
                 }
               });
             }}>

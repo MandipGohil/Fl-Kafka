@@ -4,13 +4,38 @@ import Login from "./Login";
 import Signup from "./Signup";
 import Dashboard from "./Dashboard";
 import Userprofile from "./Userprofile";
-import {createStore} from "redux";
-import {connect} from 'react-redux';
-import {addTodo} from "../actions/index";
+import Postproject from "./Postproject";
+import Dashboardwork from "./Dashboardwork";
+import Bidonproject from "./Bidonproject";
+import Projectdetails from "./Projectdetails";
+import * as API from '../api/API';
 
-import TodoItem from "./TodoItem";
 
 class Homepage extends Component {
+
+  componentWillMount(){
+    console.log("Willmount Homepage");
+    //console.log(this.state);
+      API.checklogin()
+        .then((response) => {
+          console.log(response);
+          if(response.status === 201) {
+            console.log("Session ok");
+            this.props.history.push({
+              pathname: '/dashboard',
+              state: {
+                email: response.email,
+                role: response.role
+              }
+            });
+          } else {
+            console.log("Session not ok");
+            this.props.history.push('/login');
+          }
+        });
+  }
+
+
   render() {
     return (
       <div className="container-fluid">
@@ -22,24 +47,7 @@ class Homepage extends Component {
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mr-auto">
-              <li className="nav-item active">
-                  <button type="button" className="my-2 mx-sm-2 btn-outline-info"
-                  onClick={() => {
-                    console.log("ON Click!!!!!!");
-                    this.props.history.push("/");
-                  }}>
-                    Home
-                  </button>
-              </li>
-              <li className="nav-item active">
-                  <button type="button" className="my-2 mx-sm-2 btn-outline-info"
-                  onClick={() => {
-                    console.log("ON Click!!!!!!");
-                    this.props.history.push("/dashboard");
-                  }}>
-                    Dashboard
-                  </button>
-              </li>
+
             </ul>
             <form className="form-inline my-2 my-lg-0">
               <button className="btn btn-outline-success my-2 mx-sm-3" type="button"
@@ -82,6 +90,26 @@ class Homepage extends Component {
         <Route exact path="/userprofile" render={() => (
             <div>
                 <Userprofile />
+            </div>
+        )}/>
+        <Route exact path="/postproject" render={() => (
+            <div>
+                <Postproject />
+            </div>
+        )}/>
+        <Route exact path="/dashboardwork" render={() => (
+            <div>
+                <Dashboardwork />
+            </div>
+        )}/>
+        <Route exact path="/bidonproject" render={() => (
+            <div>
+                <Bidonproject />
+            </div>
+        )}/>
+        <Route exact path="/projectdetails" render={() => (
+            <div>
+                <Projectdetails />
             </div>
         )}/>
       </div>

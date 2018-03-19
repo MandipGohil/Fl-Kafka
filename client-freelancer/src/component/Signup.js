@@ -14,6 +14,26 @@ class Signup extends Component {
       isLoggedIn: false,
       message: ''
   };
+
+  componentWillMount(){
+      API.checklogin()
+        .then((response) => {
+          console.log(response);
+          if(response.status === 201) {
+            console.log("Its ok");
+            this.props.history.push({
+              pathname: '/dashboard',
+              state: {
+                email: response.email
+              }
+            });
+          } else {
+            console.log("Its not ok forward to login page");
+            this.props.history.push('/signup');
+          }
+        });
+  }
+
   // After Click on Login this function call
       signup = (userdata) => {
           API.signup(userdata)
