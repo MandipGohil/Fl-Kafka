@@ -36,7 +36,7 @@ class Dashboardwork extends Component {
             API.getprojectsthatbid(this.state)
                       .then((response) => {
                           //alert("got this"+response.projects[0].email);
-                          //console.log(response);
+                          
                           this.setState({
                             bidprojects:response.bidprojects
                           });
