@@ -28,15 +28,7 @@ class Dashboard extends Component {
                   role: response.role
                 });
                 console.log(`Dashboard: email --> ${this.state.email} ** role --> ${this.state.role}`);
-              /*  API.getProjects(this.state)
-                          .then((response) => {
-                              //alert("got this"+response.projects[0].email);
-                              //console.log(response);
-                              this.setState({
-                                projects:response.projects
-                              });
-                              console.log(`one ---> ${this.state.projects[0].email}`);
-                          });*/
+  
                         if(this.props.location.state.role === "hire") {
                           API.getProjects(this.state)
                                     .then((response) => {
