@@ -1,5 +1,6 @@
 var mysql = require('mysql');
 
+/*
 //Put your mysql configuration settings - user, password, database and port
 function getConnection(){
 	var connection = mysql.createConnection({
@@ -10,15 +11,29 @@ function getConnection(){
 	    port	 : 3306
 	});
 	return connection;
+}*/
+
+//Connection pool
+function getConnection(){
+	var connection = mysql.createPool({
+			connectionLimit : 150,
+		  host     : 'localhost',
+	    user     : 'root',
+	    password : 'root',
+	    database : 'freelancer',
+	    port	 : 3306
+	});
+	return connection;
 }
+var connection = getConnection();
 
 function runQuery(callback,sqlQuery){
 
 	console.log("\nSQL Query::"+sqlQuery);
 
-	var connection=getConnection();
-
-	connection.query(sqlQuery, function(err, rows, fields) {
+	//var connection=getConnection();
+	//connection.query(sqlQuery, function(err, rows, fields) {
+		connection.query(sqlQuery, function(err, rows, fields) {
 		if(err){
 			console.log("ERROR: " + err.message);
 		}

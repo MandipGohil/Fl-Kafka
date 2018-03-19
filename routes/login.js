@@ -19,7 +19,7 @@ router.post('/loginFunction', function(req, res, next) {
             }
           res.json(response);
       } else {
-        userServices.userLogin(container.payload, (status) => {
+        userServices.userLogin(req, container.payload, (status) => {
           if(!status) {
             var response = {
                   "msg":"Incorrect Username or Password",
@@ -27,6 +27,7 @@ router.post('/loginFunction', function(req, res, next) {
               } //response made
               res.json(response);
           } else {
+
             var response = {
                   "msg":"You are Login Successfully..",
                   status: 201

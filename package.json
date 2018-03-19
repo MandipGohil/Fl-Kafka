@@ -6,14 +6,22 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "assert": "^1.4.1",
     "body-parser": "~1.18.2",
+    "client-sessions": "^0.8.0",
     "cookie-parser": "~1.4.3",
+    "cors": "^2.8.4",
     "debug": "~2.6.9",
     "express": "~4.15.5",
     "jade": "~1.11.0",
     "morgan": "~1.9.0",
     "mysql": "^2.15.0",
     "redux": "^3.7.2",
-    "serve-favicon": "~2.4.5"
+    "rewire": "^3.0.2",
+    "serve-favicon": "~2.4.5",
+    "supertest": "^3.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2"
   }
 }

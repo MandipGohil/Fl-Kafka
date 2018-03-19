@@ -4,6 +4,9 @@ const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const session = require('client-sessions');
+const cors = require('cors');
+
 
 const index = require('./routes/index');
 const users = require('./routes/users');
@@ -12,6 +15,19 @@ const login = require('./routes/login');
 
 const app = express();
 
+//configure the sessions with our application
+app.use(session({
+	cookieName: 'session',
+	secret: 'cmpe273_test_string',
+	duration: 30 * 60 * 1000,    //setting the time for active session
+	activeDuration: 5 * 60 * 1000,  })); // setting time for the session to be active when the window is open // 5 minutes set currently
+
+	var corsOptions = {
+	    origin: 'http://localhost:3000',
+	    credentials: true,
+	    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+	}
+	app.use(cors(corsOptions));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

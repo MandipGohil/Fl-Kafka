@@ -52,6 +52,34 @@ router.post('/signupFunction', function(req, res, next) {
                     res.json(response);
                   } //status checkUser
                   else {
+                    userServices.newUser(container.payload, function(status) {
+                        console.log(`status : - ${status}`);
+                        if(!status) {
+                          var response = {
+                                "msg":"User Not Created",
+                                status: 401
+                            }//response made
+                            res.json(response);
+                        } //status newUser
+                        else {
+                          userServices.addUser(container.payload, function(status) {
+                            if(!status) {
+                              var response = {
+                                    "msg":"Error in Insert",
+                                    status: 401
+                                } //response made
+                                res.json(response);
+                            } else {
+                              var response = {
+                                    "msg":"User Created",
+                                    status: 201
+                                } //response made
+                                res.json(response);
+                            }
+                          });
+                        }
+                    }); //newUser Function end
+
                     userServices.addUser(container.payload, function(status) {
                       if(!status) {
                         var response = {
@@ -61,24 +89,6 @@ router.post('/signupFunction', function(req, res, next) {
                           res.json(response);
                       }
                     });
-                    userServices.newUser(container.payload, function(status) {
-                        console.log(`status : - ${status}`);
-                        if(status) {
-                          var response = {
-                                "msg":"User Created",
-                                status: 201
-                            } //response made
-                            res.json(response);
-                        } //status newUser
-                        else {
-                          var response = {
-                                "msg":"User Not Created",
-                                status: 401
-                            }//response made
-                            res.json(response);
-                        }
-                    }); //newUser Function end
-
                   }
                 }); //checkUser function end
               }
