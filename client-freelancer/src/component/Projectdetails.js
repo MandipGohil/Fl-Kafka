@@ -22,7 +22,6 @@ class Projectdetails extends Component {
   componentWillMount(){
     console.log("Willmount getbidprojectdetails");
     //console.log(this.state);
-    //alert("you are in bid project");
     this.setState({
       //emailp: 'ddd@gmail.com',
     //  projectname: 'Project 4'
